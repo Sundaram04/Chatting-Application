@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -59,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,4 +70,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
+
+    // For instrumentation tests
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.48")
+
+    // For local unit tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.48")
+    kspTest("com.google.dagger:hilt-compiler:2.48")
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
 }

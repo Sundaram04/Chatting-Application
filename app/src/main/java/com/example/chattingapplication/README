@@ -1,0 +1,59 @@
+1. <-Add dependency->
+    -> In Product level Build.gradle.kts
+        -> id("com.google.dagger.hilt.android") version "2.48" apply false
+        -> id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
+
+    -> In Module level Build.gradle.kts
+        -> In Plugins
+            -> id("com.android.application")
+            -> id("com.google.dagger.hilt.android")
+        -> In dependency
+                implementation("com.google.dagger:hilt-android:2.48")
+                ksp("com.google.dagger:hilt-compiler:2.48")
+
+                // For instrumentation tests
+                androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
+                kspAndroidTest("com.google.dagger:hilt-compiler:2.48")
+
+                // For local unit tests
+                testImplementation("com.google.dagger:hilt-android-testing:2.48")
+                kspTest("com.google.dagger:hilt-compiler:2.48")
+
+                val nav_version = "2.8.0"
+                // Jetpack Compose integration
+                implementation("androidx.navigation:navigation-compose:$nav_version")
+
+                implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+
+
+2. <-Migrate from Kapt to ksp->
+    -> In Product level Build.gradle.kts
+        -> id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+    -> In Module level Build.gradle.kts
+        -> id("com.google.devtools.ksp")
+
+3. Create a file LCApplication and annotate with @HiltAndroidApp
+   Add below code Android in AndroidManifest.xml file
+   /*
+   <application
+           android:name=".LCApplication"
+           ...
+           > </application>
+   */
+
+4. <-Create Packages->
+    -> Screens
+        -> Contains the file of screens like ProfileScreen, LoginScreen etc.
+    -> data
+        -> Contains the file of Constants, DataTypes, Event used in application
+
+5. <-Create sealed class in MainActivity.kt file->
+    -> Sealed Class: `DestinationScreen` defines a restricted set of screens for navigation, ensuring that all destinations are known.
+    -> Screens as Objects: Each screen (e.g., `SignUp`, `Login`, `Profile`) is an `object` with a unique route string.
+    -> Dynamic Routes: Screens like `SingleChat` and `SingleStatus` accept dynamic parameters (e.g., `{chatId}` or `{statusId}`) in the route.
+    -> `createRoute` Function: This function allows passing values for dynamic routes, e.g., `SingleChat.createRoute("123")` gives `singleChat/123`.
+    -> Purpose: Provides structured and type-safe navigation by defining fixed routes and handling dynamic ones effectively.
+
+6. -> In MainActivity.kt file, define rememberNavController to remember the navigation over the screens
+   -> Define navHost
